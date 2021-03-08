@@ -8,12 +8,14 @@ public class CounterServer implements Counter{
 //        counter ++;
     }
 
+    int referenceCounter = counter;
+
     public static void main(String[] args){
         try {
             CounterServer server = new CounterServer();
-            Counter stub = (Counter) UnicastRemoteObject.exportObject(server, 4444);
+            Counter stub = (Counter) UnicastRemoteObject.exportObject(server, 1291);
             Registry registry = LocateRegistry.getRegistry();
-            registry.bind("ServerCont", stub);
+            registry.bind("1212", stub);
             System.out.println("Servidor Ligado");
         }catch (Exception ex){
             ex.printStackTrace();
@@ -22,11 +24,17 @@ public class CounterServer implements Counter{
 
     @Override
     public int getValue() throws RemoteException {
-        return this.counter;
+        return referenceCounter;
     }
 
     @Override
     public void nextValue() throws RemoteException {
-        this.counter++;
+        referenceCounter++;
     }
+
+    @Override
+    public void finishCounter() throws RemoteException {
+        referenceCounter = counter;
+    }
+
 }
